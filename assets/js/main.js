@@ -79,11 +79,29 @@ function enableAudioOnFirstGesture() {
     }
 }
 
-// Listen once for common user gestures (touchend/click) and attempt to start audio
-['touchend', 'click', 'keydown'].forEach(ev => {
+// Listen once for common user gestures (include touchstart for better iOS coverage)
+['touchstart','touchend', 'click', 'keydown'].forEach(ev => {
     const opts = { once: true, passive: true };
     document.addEventListener(ev, enableAudioOnFirstGesture, opts);
 });
+
+// EXTRA: explicit mobile play button (fallback) — helps when the initial play attempt is blocked
+const playMusicButton = document.querySelector('.play-music-button');
+if (playMusicButton) {
+    playMusicButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        initAudio();
+        if (!bgMusic) return;
+        bgMusic.play().then(() => {
+            // update UI
+            musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+        }).catch((err) => {
+            console.warn('Play-button play blocked:', err);
+            // show quick guidance if blocked
+            alert('If audio is blocked, tap the music icon at the bottom-right to allow playback.');
+        });
+    });
+}
 
 
 // Event listener for gift box

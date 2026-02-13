@@ -22,6 +22,8 @@
         <h1>Happy Valentine's Day! ❤️</h1>
         <p>Melania, apasa mai jos pentru o surpriza</p>
         <button class="start-button">Surprizaa</button>
+        <!-- visible fallback for mobile browsers that block the first play attempt -->
+        <button class="play-music-button" aria-label="Play music">Play music</button>
     </div>
     <!-- End Of Welcome Messages -->
 
@@ -107,7 +109,7 @@
     <div class="credits">Facut cu ❤️ de bubu al tau</div>
 
     <!-- Inline audio element to improve compatibility with mobile/Safari -->
-    <audio id="bg-audio" src="assets/audio/background-music.mp3" preload="auto" loop></audio>
+    <audio id="bg-audio" src="assets/audio/background-music.mp3" preload="auto" loop playsinline></audio>
 
     <script src="assets/js/main.js"></script>
 </body>

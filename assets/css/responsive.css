@@ -47,6 +47,17 @@
         left: 50%;
         background: #ffffff; /* make fully opaque to remove pink band */
         padding: 0.5rem;
+
+        /* center the grid content vertically so photos appear in the middle */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+    }
+
+    .gallery-grid {
+        width: 100%;
+        align-content: center; /* center grid rows when there's extra space */
     }
     
     .gift-container {
@@ -56,6 +67,12 @@
     
     .modal-image-container {
         padding-top: 75%; /* Adjust aspect ratio for mobile */
+    }
+
+    /* show explicit play button on small screens */
+    .play-music-button {
+        display: inline-block;
+        margin-top: 0.75rem;
     }
 }
 
