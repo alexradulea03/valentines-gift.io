@@ -248,30 +248,61 @@ body::-webkit-scrollbar{
 
 /* Gallery Styles */
 .gallery {
-    /* center gallery in viewport so photos appear in the middle */
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(90vw, 1400px);
-    max-height: 84vh; /* increase so photos occupy more vertical space */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
-    background: rgba(255,255,255,0.96); /* white card to hide the pink bands */
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    padding: 0.75rem;
+    width: min(95vw, 1200px); /* Slightly wider to give items room */
+    height: 85vh;            /* Use fixed height to ensure scrolling works */
+    overflow-y: auto;        /* This is the secret to seeing all photos */
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: var(--spacing-md);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.35s var(--transition-timing);
+    transition: all 0.5s var(--transition-timing);
     z-index: 900;
+    /* Performance Boosters */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    
+    /* Change 'transition: all' to specific properties (much smoother) */
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
 }
 
+/* The Grid - This un-stacks the photos */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: var(--spacing-md);
-    padding: var(--container-padding);
+    /* We use 140px on small screens and 250px on larger ones */
+    grid-template-columns: repeat(auto-fill, minmax(clamp(140px, 40vw, 250px), 1fr));
+    gap: clamp(10px, 2vw, 25px);
+    padding: var(--spacing-md);
+    justify-items: center;
+}
+
+/* Individual Polaroid Style */
+.gallery-item {
+    background: var(--white);
+    padding: 10px 10px 30px 10px; /* Classic bottom-heavy Polaroid look */
+    border-radius: 4px; /* Polaroids have sharper corners */
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transform: rotate(var(--rotation));
+    transition: all 0.3s ease;
+    width: 100%; /* Fill the grid cell */
+    max-width: 280px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Fix for the Video/Image sizes */
+.gallery-item img, 
+.gallery-item .gallery-video {
+    width: 100%;
+    height: clamp(140px, 30vw, 220px); /* Keeps them all uniform */
+    object-fit: cover;
+    border-radius: 2px;
+    display: block;
 }
 
 /* ensure internal scroll area does not show system scrollbar on desktop */
@@ -768,4 +799,65 @@ body::-webkit-scrollbar{
     padding: 10px;
     border-top: 1px solid #ffe4e1;
     border-bottom: 1px solid #ffe4e1;
+}
+
+.gallery-video {
+    width: 100%;
+    height: 250px; /* Adjust this height to match your image heights */
+    object-fit: cover;
+    display: block;
+}
+/* Bring photo to front on hover/touch */
+.gallery-item:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 999;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* Mobile specific fix: allow the gallery to be scrollable */
+@media (max-width: 480px) {
+    .gallery {
+        width: 92vw;
+        height: 80vh;
+        padding: 10px;
+    }
+    .gallery-grid {
+        gap: 10px;
+        padding: 10px;
+    }
+}
+
+.anniversary-message {
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 20px;
+    border-top: 1px dashed var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.anniversary-message p {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    color: var(--primary-color);
+    font-weight: 600;
+    font-style: italic;
+    max-width: 80%;
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+.anniversary-message i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    animation: heartBeat 1.5s ease infinite;
+}
+
+/* A soft pulse for the hearts around the text */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }
