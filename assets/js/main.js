@@ -7,15 +7,46 @@ const floatingHeartsContainer = document.querySelector('.floating-hearts');
 const musicToggle = document.querySelector('.music-toggle');
 let isOpen = false;
 let isPlaying = false;
+let bgMusic = null;
 
-// Create audio element
-const bgMusic = new Audio('assets/audio/background-music.mp3');
-bgMusic.loop = true;
+// Lazy-init audio (created on first user gesture to satisfy mobile autoplay restrictions)
+function initAudio() {
+    if (bgMusic) return;
+    bgMusic = new Audio('assets/audio/background-music.mp3');
+    bgMusic.loop = true;
+    bgMusic.preload = 'auto';
+
+    // keep UI state in sync if playback changes elsewhere
+    bgMusic.addEventListener('playing', () => {
+        isPlaying = true;
+        musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+    });
+    bgMusic.addEventListener('pause', () => {
+        isPlaying = false;
+        musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+    });
+}
 
 // Event listener for start button
 startButton.addEventListener('click', () => {
+    // initialize audio on first user gesture (required on many mobile browsers)
+    initAudio();
+
+    // try to play — handle promise so we don't get unhandled rejections on mobile
+    if (bgMusic) {
+        bgMusic.play().then(() => {
+            // success — UI updated by 'playing' event listener
+        }).catch((err) => {
+            // playback may be blocked by browser policies; fail silently but log for debugging
+            console.warn('Background music playback prevented:', err);
+        });
+    }
+
+    // fade out the welcome message then remove it from the layout so it cannot cover the gallery
     welcomeMessage.classList.add('hide');
     setTimeout(() => {
+        // remove from flow so underlying elements (gallery) are fully visible
+        welcomeMessage.style.display = 'none';
         giftContainer.classList.add('show');
         createHeartBurst();
     }, 500);
@@ -36,14 +67,20 @@ giftBox.addEventListener('click', () => {
 
 // Music toggle
 musicToggle.addEventListener('click', () => {
+    // ensure audio exists (user gesture may be required to create/play on mobile)
+    initAudio();
+
+    if (!bgMusic) return;
+
     if (isPlaying) {
         bgMusic.pause();
-        musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+        // UI will be updated by 'pause' listener
     } else {
-        bgMusic.play();
-        musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+        bgMusic.play().catch(err => {
+            console.warn('Play blocked by browser:', err);
+        });
+        // UI will be updated by 'playing' listener
     }
-    isPlaying = !isPlaying;
 });
 
 // function to create heart
@@ -143,22 +180,7 @@ images.forEach(img => {
     temp.src = img.src;
 });
 
-// Add touch events for mobile
-let touchStartY;
-gallery.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
-});
-
-gallery.addEventListener('touchmove', (e) => {
-    const touchY = e.touches[0].clientY;
-    const diff = touchStartY - touchY;
-    
-    if (Math.abs(diff) > 5) {
-        e.preventDefault();
-        gallery.scrollTop += diff;
-        touchStartY = touchY;
-    }
-});
+/* Use native scrolling on touch devices — native behavior is more reliable and performant. */
 
 // Add gallery item hover effect
 const galleryItems = document.querySelectorAll('.gallery-item');

@@ -9,6 +9,16 @@
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
         gap: var(--spacing-sm);
     }
+
+    /* keep the gallery visible and scannable on small screens */
+    .gallery {
+        top: 50%;
+        max-height: 72vh;
+        width: calc(100% - 2rem);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0 0.5rem;
+    }
     
     .modal-nav {
         padding: 0 var(--spacing-sm);
@@ -25,6 +35,15 @@
 @media (max-width: 480px) {
     .gallery-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Ensure gallery sits nicely and is scrollable on very small screens */
+    .gallery {
+        top: 48%;
+        max-height: 75vh;
+        width: calc(100% - 2rem);
+        left: 50%;
+        transform: translate(-50%, 0);
     }
     
     .gift-container {

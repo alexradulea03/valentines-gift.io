@@ -85,8 +85,9 @@ body::-webkit-scrollbar{
 
 .welcome-message h1 {
     color: var(--primary-color);
-    margin-bottom: var(--spacing-md);
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: var(--spacing-sm);
+    /* reduced across all viewports: smaller min, reduced scaling, and lower max */
+    font-size: clamp(1.25rem, 3vw, 2rem);
     font-weight: 700;
     line-height: 1.2;
 }
@@ -117,6 +118,15 @@ body::-webkit-scrollbar{
 }
 
 /* Floating Hearts */
+.floating-hearts {
+    /* full-viewport layer to display hearts above other content */
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 1100; /* above gallery (900) and other UI */
+}
+
 .heart {
     position: fixed;
     width: clamp(15px, 2vw, 25px);
@@ -126,7 +136,7 @@ body::-webkit-scrollbar{
     pointer-events: none;
     filter: drop-shadow(0 3px 6px var(--shadow-color));
     animation: floatHeart 4s ease-in-out infinite;
-    z-index: 1;
+    z-index: 1101; /* on top of gallery */
 }
 
 .heart::before,
@@ -224,14 +234,20 @@ body::-webkit-scrollbar{
 
 /* Gallery Styles */
 .gallery {
-    position: absolute;
-    top: 80%;
+    /* center gallery in viewport so photos appear in the middle */
+    position: fixed;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: min(90vw, 1400px);
+    max-height: 72vh; /* tighter max-height to keep content centered */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+    background: transparent;
     opacity: 0;
     visibility: hidden;
-    transition: all 1s var(--transition-timing);
+    transition: all 0.35s var(--transition-timing);
+    z-index: 900;
 }
 
 .gallery-grid {
@@ -240,6 +256,9 @@ body::-webkit-scrollbar{
     gap: var(--spacing-md);
     padding: var(--container-padding);
 }
+
+/* ensure internal scroll area does not show system scrollbar on desktop */
+.gallery::-webkit-scrollbar { display: none; }
 
 .gallery-item {
     background: var(--white);
