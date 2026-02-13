@@ -13,11 +13,11 @@
     /* keep the gallery visible and scannable on small screens */
     .gallery {
         top: 50%;
-        max-height: 72vh;
+        max-height: 86vh; /* use more vertical space on phones */
         width: calc(100% - 2rem);
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 0 0.5rem;
+        padding: 0.5rem;
     }
     
     .modal-nav {

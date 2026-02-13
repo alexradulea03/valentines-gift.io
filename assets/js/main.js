@@ -52,6 +52,28 @@ startButton.addEventListener('click', () => {
     }, 500);
 });
 
+// --- global one-time gesture listener to maximize chance of enabling audio on mobile ---
+function enableAudioOnFirstGesture() {
+    try {
+        initAudio();
+        if (bgMusic) {
+            bgMusic.play().catch(err => {
+                // often blocked if not a trusted event; log for diagnostics
+                console.warn('First-gesture play blocked:', err);
+            });
+        }
+    } catch (e) {
+        console.warn('enableAudioOnFirstGesture error', e);
+    }
+}
+
+// Listen once for common user gestures (touchend/click) and attempt to start audio
+['touchend', 'click', 'keydown'].forEach(ev => {
+    const opts = { once: true, passive: true };
+    document.addEventListener(ev, enableAudioOnFirstGesture, opts);
+});
+
+
 // Event listener for gift box
 giftBox.addEventListener('click', () => {
     if (!isOpen) {

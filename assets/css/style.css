@@ -240,10 +240,13 @@ body::-webkit-scrollbar{
     left: 50%;
     transform: translate(-50%, -50%);
     width: min(90vw, 1400px);
-    max-height: 72vh; /* tighter max-height to keep content centered */
+    max-height: 84vh; /* increase so photos occupy more vertical space */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
-    background: transparent;
+    background: rgba(255,255,255,0.96); /* white card to hide the pink bands */
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    padding: 0.75rem;
     opacity: 0;
     visibility: hidden;
     transition: all 0.35s var(--transition-timing);
